@@ -1,3 +1,5 @@
+package ru.amakeev;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +12,8 @@ import java.net.Socket;
  * сообщения на консоль.
  */
 public class TcpServer {
+
+    private TestRequest request;
 
     public static void main(String[] args) {
       /* Если аргументы отсутствуют, порт принимае значение поумолчанию */

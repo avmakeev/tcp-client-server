@@ -1,3 +1,7 @@
+package ru.amakeev;
+
+import ru.amakeev.common.TestRequest;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;

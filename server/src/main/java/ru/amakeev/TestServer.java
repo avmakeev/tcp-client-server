@@ -1,3 +1,5 @@
+package ru.amakeev;
+
 import java.io.*;
 import java.net.*;
 

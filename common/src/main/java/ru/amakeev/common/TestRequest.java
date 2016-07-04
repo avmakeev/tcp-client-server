@@ -1,4 +1,4 @@
-package ru.amakeev;
+package ru.amakeev.common;
 
 import java.io.Serializable;
 
