@@ -10,7 +10,7 @@ public class TestClient {
 
 
     public static void main(String args[]) {
-        LOGGER.info("Start program");
+        LOGGER.info("Start application");
 
         Client client = null;
 

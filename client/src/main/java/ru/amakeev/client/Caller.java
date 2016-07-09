@@ -9,8 +9,8 @@ public class Caller implements Runnable {
 
     private Client client;
 
-    public Caller(Client c) {
-        this.client = c;
+    public Caller(Client client) {
+        this.client = client;
     }
 
     public void run() {
