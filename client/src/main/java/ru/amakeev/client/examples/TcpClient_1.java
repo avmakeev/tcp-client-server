@@ -1,6 +1,6 @@
-package ru.amakeev;
+package ru.amakeev.client.examples;
 
-import ru.amakeev.common.TestRequest;
+import ru.amakeev.common.TcpRequest;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,12 +16,12 @@ import java.net.UnknownHostException;
  * консоли. Хост сервера указвается первым аргументом, порт вторым. При
  * отсутствии аргументов в качестве адреса порта принимается localhost:9999
  */
-public class TcpClient {
+public class TcpClient_1 {
 
     private static final String DEFAULT_HOST = "localhost";
     private static final int DEFAULT_PORT = 9999;
 
-    private TestRequest request;
+    private TcpRequest request;
 
     public static void main(String[] args) {
       /* Определяем хост сервера и порт */

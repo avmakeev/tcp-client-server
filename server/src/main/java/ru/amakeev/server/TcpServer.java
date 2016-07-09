@@ -1,4 +1,6 @@
-package ru.amakeev;
+package ru.amakeev.server;
+
+import ru.amakeev.common.TcpRequest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,9 +15,13 @@ import java.net.Socket;
  */
 public class TcpServer {
 
-    private TestRequest request;
 
     public static void main(String[] args) {
+
+        TcpRequest request = new TcpRequest();
+
+        System.out.println(request.getTestString("привет"));
+
       /* Если аргументы отсутствуют, порт принимае значение поумолчанию */
         int port = DEFAULT_PORT;
         if (args.length > 0) {
