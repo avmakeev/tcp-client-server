@@ -1,78 +1,79 @@
 package ru.amakeev.server;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.amakeev.common.TcpRequest;
+import ru.amakeev.common.TcpResponse;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- * Слушает указанный в первом параметре порт и выводит все приходящие на него
- * сообщения на консоль.
- */
-public class TcpServer {
+public class TcpServer extends Thread {
 
+    private static final Logger LOGGER = LogManager.getLogger(TcpServer.class);
+
+    private static final int DEFAULT_PORT = 3434;
+
+    private final Socket socket;
 
     public static void main(String[] args) {
+        LOGGER.info("Start server application");
 
-        TcpRequest request = new TcpRequest();
+        int serverPort = DEFAULT_PORT;
 
-        System.out.println(request.getTestString("привет"));
+        try {
+            int i = 0;
 
-      /* Если аргументы отсутствуют, порт принимае значение поумолчанию */
-        int port = DEFAULT_PORT;
-        if (args.length > 0) {
-            port = Integer.parseInt(args[0]);
-        }
-      /* Создаем серверный сокет на полученном порту */
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(port);
-        } catch (IOException e) {
-            System.out.println("Порт занят: " + port);
-            System.exit(-1);
-        }
-      /*
-       * Если порт был свободен и сокет был успешно создан, можно переходить к
-       * следующему шагу - ожиданию клинта
-       */
-        Socket clientSocket = null;
-        try {
-            clientSocket = serverSocket.accept();
-        } catch (IOException e) {
-            System.out.println("Ошибка при подключении к порту: " + port);
-            System.exit(-1);
-        }
-      /*
-       * Теперь можно получить поток ввода, в который помещаются сообщения от
-       * клиента
-       */
-        InputStream in = null;
-        try {
-            in = clientSocket.getInputStream();
-        } catch (IOException e) {
-            System.out.println("Не удалось получить поток ввода.");
-            System.exit(-1);
-        }
-      /*
-       * В этой реализации сервер будет без конца читать поток и выводить его
-       * содержимое на консоль
-       */
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        String ln = null;
-        try {
-            while ((ln = reader.readLine()) != null) {
-                System.out.println(ln);
-                System.out.flush();
+            ServerSocket server = new ServerSocket(serverPort);
+
+            LOGGER.info("server is started");
+
+            while (true) {
+                new TcpServer(server.accept());
+                i++;
             }
-        } catch (IOException e) {
-            System.out.println("Ошибка при чтении сообщения.");
-            System.exit(-1);
+        } catch (Exception e) {
+            LOGGER.error("init error: ", e);
         }
+
     }
 
-    private static final int DEFAULT_PORT = 9999;
+    public TcpServer(Socket socket) {
+        this.socket = socket;
+
+        setDaemon(true);
+        setPriority(NORM_PRIORITY);
+        start();
+    }
+
+    @Override
+    public void run() {
+        try {
+
+            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+
+            TcpRequest request = (TcpRequest) objectInputStream.readObject();
+
+//            objectInputStream.close();
+
+            LOGGER.info("Object from client: " + request);
+
+            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+
+            TcpResponse response = new TcpResponse();
+            response.setString("ТЕСТОВЫЙ ОТВЕТ");
+
+            outputStream.writeObject(response);
+
+//            outputStream.close();
+
+            socket.close();
+
+        }
+        catch(Exception e) {
+            LOGGER.error("Error read from input stream", e);
+        }
+    }
 }

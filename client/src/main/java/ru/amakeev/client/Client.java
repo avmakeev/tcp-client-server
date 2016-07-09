@@ -28,11 +28,9 @@ public class Client {
 
     public Client() {}
 
-    public Client(String host, int port) throws IOException {
+    public Client(String host, int port){
         this.host = host;
         this.port = port;
-
-        createSocket();
     }
 
     private void createSocket() throws IOException {
@@ -48,11 +46,12 @@ public class Client {
     }
 
     public Object remoteCall(String serviceName, String methodName, Object[] params) {
-        Object response = null;
-
-        TcpRequest tcpRequest = new TcpRequest(serviceName, methodName, params);
-
         try {
+            createSocket();
+
+            TcpRequest tcpRequest = new TcpRequest(serviceName, methodName, params);
+
+
 
             ObjectOutputStream outputStream = new ObjectOutputStream(this.socket.getOutputStream());
 
@@ -60,7 +59,7 @@ public class Client {
 
             ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
 
-            response = objectInputStream.readObject();
+            return objectInputStream.readObject();
 
         } catch (IOException e) {
             LOGGER.error("Error send object", e);
@@ -68,7 +67,6 @@ public class Client {
             LOGGER.error("Response class not found", e);
         }
 
-        return response;
-
+        return null;
     }
 }
