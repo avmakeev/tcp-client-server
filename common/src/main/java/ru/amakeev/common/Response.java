@@ -11,6 +11,10 @@ public class Response implements Serializable {
 
     private Object result;
 
+    private String error;
+
+    private Boolean isVoid = false;
+
     public String getSerialNumber() {
         return serialNumber;
     }
@@ -27,11 +31,30 @@ public class Response implements Serializable {
         this.result = result;
     }
 
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public Boolean getVoid() {
+        return isVoid;
+    }
+
+    public void setVoid(Boolean aVoid) {
+        isVoid = aVoid;
+    }
+
     @Override
     public String toString() {
         return "Response{" +
-                "result=" + result +
-                ", serialNumber='" + serialNumber + '\'' +
+                "serialNumber='" + serialNumber + '\'' +
+                ", result=" + result +
+                ", error='" + error + '\'' +
+                ", isVoid=" + isVoid +
                 '}';
     }
+
 }

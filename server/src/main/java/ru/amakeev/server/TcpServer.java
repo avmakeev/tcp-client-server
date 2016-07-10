@@ -14,9 +14,6 @@ public class TcpServer {
     public static void main(String[] args) {
         LOGGER.info("Start server application");
 
-        //        ExecutorService service = Executors.newFixedThreadPool();
-
-
         int serverPort = DEFAULT_PORT;
 
         try {

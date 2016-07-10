@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.amakeev.common.Command;
 import ru.amakeev.common.Response;
+import ru.amakeev.server.services.ServiceHandler;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,11 +34,9 @@ public class ClientSession extends Thread {
 
                 Command command = getCommand();
 
-                LOGGER.info("Object from client: " + command);
+                Response response = ServiceHandler.getInstance().callMethod(command);
 
-                sleep(5000);
-
-                sendResponse(createTestResponse(command));
+                sendResponse(response);
 
             }
 
@@ -49,20 +48,11 @@ public class ClientSession extends Thread {
             } catch (IOException ioEx) {
                 LOGGER.error("cant close socket", ioEx);
             }
-        } catch (InterruptedException e) {
-            LOGGER.error(e);
         } catch (IOException e) {
             LOGGER.error(e);
         } catch (ClassNotFoundException e) {
             LOGGER.error(e);
         }
-    }
-
-    private Response createTestResponse(Command command) {
-        Response response = new Response();
-        response.setSerialNumber(command.getSerialNumber());
-        response.setResult("ТЕСТОВЫЙ ОТВЕТ");
-        return response;
     }
 
     private void sendResponse(Response response) throws IOException {
