@@ -10,6 +10,10 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class Client {
 
@@ -22,11 +26,15 @@ public class Client {
     private String host = DEFAULT_HOST;
     private int port = DEFAULT_PORT;
 
+    private ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+
     private Socket socket = null;
 
-    public Client(String host, int port){
+    public Client(String host, int port) throws IOException {
         this.host = host;
         this.port = port;
+
+        createSocket();
     }
 
     private void createSocket() throws IOException {
@@ -42,19 +50,31 @@ public class Client {
     }
 
     public Object remoteCall(String serviceName, String methodName, Object[] params) {
+        Future<Object> futureResult = executor.submit(() -> {
+            try {
+                Command command = createCommand(serviceName, methodName, params);
+
+                sendCommand(command);
+
+                return readResponse();
+
+            } catch (IOException e) {
+                LOGGER.error("Error send object", e);
+            } catch (ClassNotFoundException e) {
+                LOGGER.error("Response class not found", e);
+            }
+
+                return null;
+        });
+
         try {
-            createSocket();
 
-            Command command = createCommand(serviceName, methodName, params);
+            return futureResult.get();
 
-            sendCommand(command);
-
-            return readResponse();
-
-        } catch (IOException e) {
-            LOGGER.error("Error send object", e);
-        } catch (ClassNotFoundException e) {
-            LOGGER.error("Response class not found", e);
+        } catch (InterruptedException e) {
+            LOGGER.error(e);
+        } catch (ExecutionException e) {
+            LOGGER.error(e);
         }
 
         return null;
