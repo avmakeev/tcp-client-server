@@ -3,7 +3,7 @@ package ru.amakeev.server;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.amakeev.common.Command;
-import ru.amakeev.common.TcpResponse;
+import ru.amakeev.common.Response;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -60,8 +60,9 @@ public class TcpServer extends Thread {
 
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
 
-            TcpResponse response = new TcpResponse();
-            response.setString("ТЕСТОВЫЙ ОТВЕТ");
+            Response response = new Response();
+            response.setSerialNumber(request.getSerialNumber());
+            response.setResult("ТЕСТОВЫЙ ОТВЕТ");
 
             sleep(1000);
 

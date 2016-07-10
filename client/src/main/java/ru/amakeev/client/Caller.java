@@ -2,7 +2,7 @@ package ru.amakeev.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.amakeev.common.TcpResponse;
+import ru.amakeev.common.Response;
 
 public class Caller implements Runnable {
 
@@ -17,7 +17,7 @@ public class Caller implements Runnable {
     public void run() {
 
         while(true) {
-            TcpResponse response = (TcpResponse) client.remoteCall("service1", "sleep", new Object[]{new Long(1000)});
+            Response response = (Response) client.remoteCall("service1", "sleep", new Object[]{new Long(1000)});
 
             LOGGER.info("Current Date is:" + response);
         }
