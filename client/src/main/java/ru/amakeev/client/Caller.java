@@ -2,7 +2,6 @@ package ru.amakeev.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.amakeev.common.TcpRequest;
 import ru.amakeev.common.TcpResponse;
 
 public class Caller implements Runnable {

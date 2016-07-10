@@ -12,7 +12,7 @@ public class TestClient {
 
         Client client = new Client("localhost", 3434);
 
-        for(int i=0;i<10;i++) {
+        for(int i=0;i<1;i++) {
             new Thread(new Caller(client)).start();
         }
     }

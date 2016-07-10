@@ -2,17 +2,15 @@ package ru.amakeev.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.amakeev.common.TcpRequest;
+import ru.amakeev.common.Command;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.UUID;
 
-/**
- * Created by alexey on 06.07.16.
- */
 public class Client {
 
     private static final Logger LOGGER = LogManager.getLogger(Client.class);
@@ -26,8 +24,6 @@ public class Client {
 
     private Socket socket = null;
 
-    public Client() {}
-
     public Client(String host, int port){
         this.host = host;
         this.port = port;
@@ -37,7 +33,7 @@ public class Client {
         try {
             socket = new Socket(host, port);
         } catch (UnknownHostException e) {
-            LOGGER.error("Uncknoun host: " + host);
+            LOGGER.error("Unknown host: " + host);
             throw e;
         } catch (IOException e) {
             LOGGER.error("I/O Error creating socket " + host + ":" + port);
@@ -49,17 +45,11 @@ public class Client {
         try {
             createSocket();
 
-            TcpRequest tcpRequest = new TcpRequest(serviceName, methodName, params);
+            Command command = createCommand(serviceName, methodName, params);
 
+            sendCommand(command);
 
-
-            ObjectOutputStream outputStream = new ObjectOutputStream(this.socket.getOutputStream());
-
-            outputStream.writeObject(tcpRequest);
-
-            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-
-            return objectInputStream.readObject();
+            return readResponse();
 
         } catch (IOException e) {
             LOGGER.error("Error send object", e);
@@ -68,5 +58,28 @@ public class Client {
         }
 
         return null;
+    }
+
+    private void sendCommand(Command command) throws IOException {
+        ObjectOutputStream outputStream = new ObjectOutputStream(this.socket.getOutputStream());
+
+        outputStream.writeObject(command);
+    }
+
+    private Object readResponse() throws IOException, ClassNotFoundException {
+        ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+
+        return objectInputStream.readObject();
+    }
+
+    private Command createCommand(String serviceName, String methodName, Object[] params) {
+        Command command = new Command();
+
+        command.setSerialNumber(UUID.randomUUID().toString());
+        command.setServiceName(serviceName);
+        command.setMethodName(methodName);
+        command.setParams(params);
+
+        return command;
     }
 }

@@ -2,7 +2,7 @@ package ru.amakeev.server;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.amakeev.common.TcpRequest;
+import ru.amakeev.common.Command;
 import ru.amakeev.common.TcpResponse;
 
 import java.io.ObjectInputStream;
@@ -54,9 +54,7 @@ public class TcpServer extends Thread {
 
             ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
 
-            TcpRequest request = (TcpRequest) objectInputStream.readObject();
-
-//            objectInputStream.close();
+            Command request = (Command) objectInputStream.readObject();
 
             LOGGER.info("Object from client: " + request);
 
@@ -65,9 +63,9 @@ public class TcpServer extends Thread {
             TcpResponse response = new TcpResponse();
             response.setString("ТЕСТОВЫЙ ОТВЕТ");
 
-            outputStream.writeObject(response);
+            sleep(1000);
 
-//            outputStream.close();
+            outputStream.writeObject(response);
 
             socket.close();
 
