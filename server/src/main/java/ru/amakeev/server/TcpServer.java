@@ -15,6 +15,9 @@ public class TcpServer {
         LOGGER.info("Start server application");
 
         int serverPort = DEFAULT_PORT;
+        if (args.length > 0) {
+            serverPort = Integer.parseInt(args[0]);
+        }
 
         try {
             ServerSocket server = new ServerSocket(serverPort);

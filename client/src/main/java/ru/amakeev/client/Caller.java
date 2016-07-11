@@ -17,9 +17,9 @@ public class Caller implements Runnable {
     public void run() {
 
         while(true) {
-            Response response = (Response) client.remoteCall("service1", "sleep", new Object[]{new Long(1000)});
+            client.remoteCall("service1", "sleep", new Object[]{new Long(1000)});
 
-            LOGGER.info("Current Date is:" + response);
+            LOGGER.info("Current Date is:" + client.remoteCall("service1", "getCurrentDate", new Object[]{}));
         }
 
     }

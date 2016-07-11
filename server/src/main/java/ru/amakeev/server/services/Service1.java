@@ -9,13 +9,15 @@ public class Service1 {
 
     private static final Logger LOGGER = LogManager.getLogger(Service1.class);
 
-    public Date sleep(Long time) {
+    public void sleep(Long time) {
         try {
             Thread.sleep(time);
         } catch (InterruptedException e) {
             LOGGER.error(e);
         }
+    }
 
+    public Date getCurrentDate() {
         return new Date();
     }
 }
